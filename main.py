@@ -3,7 +3,26 @@ import pymysql
 import matplotlib.pyplot as plt
 import seaborn as sns
 import math
+import mysql.connector
+import csv
 
+def ingresar_datos_a_mysql():
+    miConexion = mysql.connector.connect(host='localhost', user='root', passwd='', db='proyecto')
+    cursor = miConexion.cursor()
+
+    with open('shoes_dataset.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            query = "INSERT INTO shoes_dataset (InvoiceNo, Date, Country, ProductID, Shop, Gender, SizeUS, SizeEU, SizeUK, UnitPriscount, Discount, SalePrice) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            cursor.execute(query, row)
+
+    miConexion.commit()
+
+    cursor.close()
+    miConexion.close()
+    print("Datos insertados correctamente en la tabla MySQL.")
+
+ingresar_datos_a_mysql()
 # Conexión a la base de datos MySQL
 connection = pymysql.connect(
     host='tu_host', 
